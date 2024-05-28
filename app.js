@@ -18,6 +18,12 @@ canvas.addEventListener('mousedown', (e) => {
     lastY = event.offsetY;
   })
 
+  canvas.addEventListener('touchstart', (e) => {
+    isDrawing = true;
+    lastX = event.offsetX;
+    lastY = event.offsetY;
+  })
+
   canvas.addEventListener('mousemove', (e)=>{
     if(isDrawing){
       ctx.beginPath();
@@ -30,7 +36,23 @@ canvas.addEventListener('mousedown', (e) => {
     }
   })
 
+  canvas.addEventListener('touchmove', (e)=>{
+    if(isDrawing){
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(event.offsetX, event.offsetY);
+      ctx.stroke();
+
+      lastX = event.offsetX;
+      lastY = event.offsetY;
+    }
+  })
+
   canvas.addEventListener('mouseup', ()=>{
+    isDrawing = false;
+  })
+
+  canvas.addEventListener('touchend', ()=>{
     isDrawing = false;
   })
 
