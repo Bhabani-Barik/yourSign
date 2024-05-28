@@ -19,10 +19,14 @@ canvas.addEventListener('mousedown', (e) => {
   })
 
   canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     isDrawing = true;
-    lastX = event.offsetX;
-    lastY = event.offsetY;
-  })
+    const touch = e.touches[0];
+    // lastX = event.offsetX;
+    // lastY = event.offsetY;
+    [lastX, lastY] = [touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop];
+
+  });
 
   canvas.addEventListener('mousemove', (e)=>{
     if(isDrawing){
@@ -37,15 +41,20 @@ canvas.addEventListener('mousedown', (e) => {
   })
 
   canvas.addEventListener('touchmove', (e)=>{
-    if(isDrawing){
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(event.offsetX, event.offsetY);
-      ctx.stroke();
+    // if(isDrawing){
+    //   ctx.beginPath();
+    //   ctx.moveTo(lastX, lastY);
+    //   ctx.lineTo(event.offsetX, event.offsetY);
+    //   ctx.stroke();
 
-      lastX = event.offsetX;
-      lastY = event.offsetY;
-    }
+    //   lastX = event.offsetX;
+    //   lastY = event.offsetY;
+    // }
+
+    if (!isDrawing) return;
+    e.preventDefault(); // Prevent default touch actions
+    const touch = e.touches[0];
+    drawLine(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
   })
 
   canvas.addEventListener('mouseup', ()=>{
@@ -55,6 +64,14 @@ canvas.addEventListener('mousedown', (e) => {
   canvas.addEventListener('touchend', ()=>{
     isDrawing = false;
   })
+
+  function drawLine(x, y) {
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    [lastX, lastY] = [x, y];
+}
 
   canvasColor.addEventListener('change', (e) =>{
     ctx.fillStyle = e.target.value;
